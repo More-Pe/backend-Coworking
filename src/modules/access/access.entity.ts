@@ -1,24 +1,35 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Person } from '../person/person.entity';
 import { Room } from '../room/room.entity';
 
+export enum Status {
+    Entry = 'entry',
+    Exit = 'exit',
+}
+
 @Entity()
 export class Access {
-	@PrimaryGeneratedColumn()
-	id_access!: number;
+    @PrimaryGeneratedColumn()
+    access_id!: number;
 
-	@ManyToOne(() => Person, person => person.accesses)
-	person!: Person;
+    @ManyToOne(() => Person, person => person.accesses, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'person_id', referencedColumnName: 'person_id' })
+    person!: Person;
 
-	@ManyToOne(() => Room, room => room.accesses)
-	room!: Room;
+    @ManyToOne(() => Room, room => room.accesses, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'room_id', referencedColumnName: 'room_id' })
+    room!: Room;
 
-	@Column({ type: 'timestamp' })
-	entry_time!: Date;
+    @Column({ type: 'datetime' })
+    entry_time!: Date;
 
-	@Column({ type: 'timestamp', nullable: true })
-	exit_time!: Date;
+    @Column({ type: 'datetime', nullable: true })
+    exit_time!: Date;
 
-	@Column({ type: 'varchar', length: 20 })
-	status!: string; // 'entrada' o 'salida'
+    @Column({
+        type: 'enum',
+        enum: Status,
+        default: Status.Exit,
+    })
+    status!: Status;
 }

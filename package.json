@@ -11,7 +11,10 @@
     "revert:migrations": "npx typeorm-ts-node-commonjs migration:revert -d ./src/database/db.ts",
     "db:drop": "npx typeorm-ts-node-commonjs schema:drop -d ./src/database/db.ts",
     "db:seed": "npx ts-node ./src/database/seeders/dbSeeder.ts",
-    "db:refresh": "npm run db:drop && npm run migrations && npm run db:seed"
+    "db:refresh": "npm run db:drop && npm run migrations && npm run db:seed",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "create:migration": "npx typeorm-ts-node-commonjs migration:create -d ./src/database/db.ts ./src/database/migrations",
+    "run:migrations": "npx typeorm-ts-node-commonjs migration:run -d ./src/database/db.ts"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +30,6 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.20",
     "typeorm-ts-node-commonjs": "^0.3.20",
     "typescript": "^5.5.3"
   },
@@ -37,7 +39,8 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
-    "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2"
+    "nodemon": "^3.1.6",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.20"
   }
 }
