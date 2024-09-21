@@ -14,6 +14,10 @@ export class AuthService {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         const newPerson = Person.create({
+            first_name: '',
+            last_name: '',
+            dni: '',
+            phone: '',
             email: email,
             password: hashedPassword,
             startup: startup,

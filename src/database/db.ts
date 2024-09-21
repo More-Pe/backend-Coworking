@@ -21,6 +21,6 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     entities: [Person, Room, Access, AccessHistory, Administration],
     migrations: [Persons1726833407725, Rooms1726833417916, Access1726833450591, AccessHistory1726833490683, Administration],
-    synchronize: false,
+    synchronize: true,
     logging: true,
 });

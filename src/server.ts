@@ -1,6 +1,7 @@
 
 import dotenv from 'dotenv';
-import { AppDataSource } from './database/db'
+import { AppDataSource } from './database/db';
+import authRouter from './modules/authentication/auth.routes';
 import express from 'express';
 import cors from 'cors';
 
@@ -15,6 +16,8 @@ app.use(cors({
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+app.use('/api', authRouter);
 
 const PORT = process.env.PORT || 4000;
 

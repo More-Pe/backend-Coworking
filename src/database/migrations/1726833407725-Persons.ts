@@ -24,13 +24,13 @@ export class Persons1726833407725 implements MigrationInterface {
                         name: 'first_name',
                         type: 'varchar',
                         length: '100',
-                        isNullable: false,
+                        isNullable: true,
                     },
                     {
                         name: 'last_name',
                         type: 'varchar',
                         length: '100',
-                        isNullable: false,
+                        isNullable: true,
                     },
                     {
                         name: 'startup',
@@ -55,14 +55,14 @@ export class Persons1726833407725 implements MigrationInterface {
                         name: 'dni',
                         type: 'varchar',
                         length: '20',
-                        isNullable: false,
+                        isNullable: true,
                         isUnique: true,
                     },
                     {
                         name: 'phone',
                         type: 'varchar',
                         length: '20',
-                        isNullable: false,
+                        isNullable: true,
                     }
                 ],
             }),
