@@ -46,6 +46,12 @@ export class Persons1726833407725 implements MigrationInterface {
                         isUnique: true,
                     },
                     {
+						name: 'password',
+						type: 'varchar',
+						length: '12',
+						isNullable: false,
+					},
+                    {
                         name: 'dni',
                         type: 'varchar',
                         length: '20',

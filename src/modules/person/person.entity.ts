@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from 'typeorm';
 import { Access } from '../access/access.entity';
 import { AccessHistory } from '../access_history/access_history.entity';
 
@@ -8,7 +8,7 @@ export enum Role {
 }
 
 @Entity()
-export class Person {
+export class Person extends BaseEntity { 
     @PrimaryGeneratedColumn()
     person_id!: number;
 
@@ -31,6 +31,9 @@ export class Person {
     @Column({ type: 'varchar', length: 100, unique: true })
     email!: string;
 
+    @Column({ type: 'varchar', length: 255 })
+    password!: string;
+
     @Column({ type: 'varchar', length: 20, unique: true })
     dni!: string;
 
@@ -43,5 +46,6 @@ export class Person {
     @OneToMany(() => AccessHistory, history => history.person)
     access_histories!: AccessHistory[];
 }
+
 
 
