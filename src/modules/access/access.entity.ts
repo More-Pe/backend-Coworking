@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { Person } from '../person/person.entity';
 import { Room } from '../room/room.entity';
 
@@ -8,7 +8,7 @@ export enum Status {
 }
 
 @Entity()
-export class Access {
+export class Access extends BaseEntity {
     @PrimaryGeneratedColumn()
     access_id!: number;
 
