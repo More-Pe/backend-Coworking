@@ -11,6 +11,7 @@ export class Persons1726833407725 implements MigrationInterface {
                         type: 'int',
                         isPrimary: true,
                         isGenerated: true,
+                        isNullable: false,
                         generationStrategy: 'increment',
                     },
                     {
@@ -46,11 +47,11 @@ export class Persons1726833407725 implements MigrationInterface {
                         isUnique: true,
                     },
                     {
-						name: 'password',
-						type: 'varchar',
-						length: '12',
-						isNullable: false,
-					},
+                        name: 'password',
+                        type: 'varchar',
+                        length: '255',
+                        isNullable: false,
+                    },
                     {
                         name: 'dni',
                         type: 'varchar',
@@ -74,6 +75,3 @@ export class Persons1726833407725 implements MigrationInterface {
         await queryRunner.dropTable('persons');
     }
 }
-
-
-
