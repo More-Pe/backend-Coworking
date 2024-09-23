@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
 export class Access1726833450591 implements MigrationInterface {
 
@@ -36,29 +36,38 @@ export class Access1726833450591 implements MigrationInterface {
                         name: 'status',
                         type: 'enum',
                         enum: ['entry', 'exit'],
-                        default: `'exit'`,
-                    },
-                ],
-                foreignKeys: [
-                    {
-                        columnNames: ['person_id'],
-                        referencedTableName: 'persons',
-                        referencedColumnNames: ['person_id'],
-                        onDelete: 'CASCADE',
-                    },
-                    {
-                        columnNames: ['room_id'],
-                        referencedTableName: 'rooms',
-                        referencedColumnNames: ['room_id'],
-                        onDelete: 'CASCADE',
+                        isNullable: false,
+                        default: `'entry'`,
                     },
                 ],
             }),
             true
         );
+
+        await queryRunner.createForeignKey('access', new TableForeignKey({
+            columnNames: ['person_id'],
+            referencedTableName: 'person',
+            referencedColumnNames: ['person_id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+        }));
+
+        await queryRunner.createForeignKey('access', new TableForeignKey({
+            columnNames: ['room_id'],
+            referencedTableName: 'room',
+            referencedColumnNames: ['room_id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+        }));
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const table = await queryRunner.getTable('access');
+        const foreignKeys = table!.foreignKeys;
+
+        await queryRunner.dropForeignKey('access', foreignKeys.find(fk => fk.columnNames.indexOf('person_id') !== -1)!);
+        await queryRunner.dropForeignKey('access', foreignKeys.find(fk => fk.columnNames.indexOf('room_id') !== -1)!);
+
         await queryRunner.dropTable('access');
     }
 

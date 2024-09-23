@@ -12,6 +12,12 @@ export class Access extends BaseEntity {
     @PrimaryGeneratedColumn()
     access_id!: number;
 
+    @Column({ type: 'int' })
+    person_id!: number;
+
+    @Column({ type: 'int' })
+    room_id!: number;
+
     @ManyToOne(() => Person, person => person.accesses, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'person_id', referencedColumnName: 'person_id' })
     person!: Person;
@@ -20,16 +26,17 @@ export class Access extends BaseEntity {
     @JoinColumn({ name: 'room_id', referencedColumnName: 'room_id' })
     room!: Room;
 
-    @Column({ type: 'datetime' })
+    @Column({ type: 'datetime', nullable: false })
     entry_time!: Date;
 
     @Column({ type: 'datetime', nullable: true })
-    exit_time!: Date;
+    exit_time!: Date | null;
 
     @Column({
         type: 'enum',
         enum: Status,
-        default: Status.Exit,
+        nullable: false,
+        default: Status.Entry
     })
     status!: Status;
 }
