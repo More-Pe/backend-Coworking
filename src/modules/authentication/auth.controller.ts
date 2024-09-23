@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, password, startup } = req.body;
+        const { first_name, email, password, startup } = req.body;
 
         if (!email || !password || !startup) {
             return res.status(400).json({
@@ -12,7 +12,7 @@ export const register = async (req: Request, res: Response) => {
             });
         }
 
-        const newPerson = await AuthService.register(email, password, startup);
+        const newPerson = await AuthService.register(first_name, email, password, startup);
 
         return res.status(201).json({
             success: true,

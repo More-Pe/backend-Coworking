@@ -15,29 +15,30 @@ export class Person extends BaseEntity {
     @Column({
         type: 'enum',
         enum: Role,
+        nullable: false,
         default: Role.User,
     })
     role!: Role;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 100, nullable: false })
     first_name!: string;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 100, nullable: true })
     last_name!: string;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 100, nullable: false })
     startup!: string;
 
-    @Column({ type: 'varchar', length: 100, unique: true })
+    @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
     email!: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, nullable: false })
     password!: string;
 
-    @Column({ type: 'varchar', length: 20, unique: true })
+    @Column({ type: 'varchar', length: 20, nullable: true, unique: true })
     dni!: string;
 
-    @Column({ type: 'varchar', length: 20 })
+    @Column({ type: 'varchar', length: 20, nullable: true })
     phone!: string;
 
     @OneToMany(() => Access, access => access.person)

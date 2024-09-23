@@ -25,7 +25,7 @@ export class Persons1726833407725 implements MigrationInterface {
                         name: 'first_name',
                         type: 'varchar',
                         length: '100',
-                        isNullable: true,
+                        isNullable: false,
                     },
                     {
                         name: 'last_name',

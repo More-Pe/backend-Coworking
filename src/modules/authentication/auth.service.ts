@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export class AuthService {
 
-    public static async register(email: string, password: string, startup: string) {
+    public static async register(first_name: string, email: string, password: string, startup: string) {
 
         const existingUser = await Person.findOne({ where: { email } });
         if (existingUser) {
@@ -14,10 +14,7 @@ export class AuthService {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         const newPerson = Person.create({
-            first_name: '',
-            last_name: '',
-            dni: '',
-            phone: '',
+            first_name: first_name,
             email: email,
             password: hashedPassword,
             startup: startup,
