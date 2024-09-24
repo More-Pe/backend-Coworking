@@ -1,4 +1,5 @@
 import { Access, Status } from './access.entity';
+import { AccessHistory } from '../access_history/access_history.entity';
 import { Person } from '../person/person.entity';
 import { Room } from '../room/room.entity';
 import { IsNull } from 'typeorm';
@@ -44,7 +45,16 @@ export class AccessService {
             status: Status.Entry,
         });
     
-        return await access.save();
+        const savedAccess = await access.save();
+
+        await AccessHistory.create({
+            person_id: person.person_id,
+            room_id: room.room_id,
+            access_time: savedAccess.entry_time,
+            action: 'entry'
+        }).save();
+
+        return savedAccess;
     }
 
     public static async registerExit(person_id: number, room_id: number): Promise<Access> {
@@ -72,7 +82,16 @@ export class AccessService {
         access.exit_time = new Date();
         access.status = Status.Exit;
 
-        return await access.save();
+        const savedAccess = await access.save();
+
+        await AccessHistory.create({
+            person_id: person_id,
+            room_id: room_id,
+            access_time: savedAccess.exit_time!,
+            action: 'exit'
+        }).save();
+
+        return savedAccess;
     }
 
     public static async getCurrentPeopleInRoom(room_id: number): Promise<{ people: Omit<Person, 'password'>[], count: number }> {
@@ -98,5 +117,4 @@ export class AccessService {
         return { count: people.length, people };
     }
 }
-
 
