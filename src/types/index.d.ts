@@ -23,7 +23,7 @@ export interface AccessHistoryResponse {
     };
     access_time: Date;
     action: string;
-    person: {
+    person?: {
         first_name: string;
         startup: string;
         email: string;

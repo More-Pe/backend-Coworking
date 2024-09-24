@@ -8,6 +8,7 @@ export enum Role {
 }
 
 @Entity()
+
 export class Person extends BaseEntity { 
     @PrimaryGeneratedColumn()
     person_id!: number;
