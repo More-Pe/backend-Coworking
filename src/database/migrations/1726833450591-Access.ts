@@ -46,7 +46,7 @@ export class Access1726833450591 implements MigrationInterface {
 
         await queryRunner.createForeignKey('access', new TableForeignKey({
             columnNames: ['person_id'],
-            referencedTableName: 'person',
+            referencedTableName: 'persons',
             referencedColumnNames: ['person_id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
@@ -54,7 +54,7 @@ export class Access1726833450591 implements MigrationInterface {
 
         await queryRunner.createForeignKey('access', new TableForeignKey({
             columnNames: ['room_id'],
-            referencedTableName: 'room',
+            referencedTableName: 'rooms',
             referencedColumnNames: ['room_id'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',

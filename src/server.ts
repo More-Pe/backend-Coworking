@@ -1,4 +1,5 @@
 
+import express from 'express';
 import dotenv from 'dotenv';
 import { AppDataSource } from './database/db';
 import authRouter from './modules/authentication/auth.routes';
@@ -7,7 +8,6 @@ import administrationRouter from './modules/administration/administration.routes
 import roomRouter from './modules/room/room.routes';
 import personRouter from './modules/person/person.routes';
 import accessHistoryRouter from './modules/access_history/access_history.routes';
-import express from 'express';
 import cors from 'cors';
 
 dotenv.config();

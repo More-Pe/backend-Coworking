@@ -37,14 +37,14 @@ export class AccessHistory1726833490683 implements MigrationInterface {
                 foreignKeys: [
                     {
                         columnNames: ['person_id'],
-                        referencedTableName: 'person',
+                        referencedTableName: 'persons',
                         referencedColumnNames: ['person_id'],
                         onDelete: 'CASCADE',
                         onUpdate: 'CASCADE',
                     },
                     {
                         columnNames: ['room_id'],
-                        referencedTableName: 'room',
+                        referencedTableName: 'rooms',
                         referencedColumnNames: ['room_id'],
                         onDelete: 'CASCADE',
                         onUpdate: 'CASCADE',
