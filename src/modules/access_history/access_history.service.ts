@@ -36,7 +36,9 @@ export class AccessHistoryService {
         const whereClause: any = { room_id };
         
         if (startDate && endDate) {
-            whereClause.access_time = Between(new Date(startDate), new Date(endDate));
+            const adjustedEndDate = new Date(endDate);
+            adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+            whereClause.access_time = Between(new Date(startDate), adjustedEndDate);
         }
 
         const accessHistories = await AccessHistory.find({
