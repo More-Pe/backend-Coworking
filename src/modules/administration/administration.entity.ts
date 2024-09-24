@@ -1,16 +1,38 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
-@Entity()
+@Entity('administration')
 export class Administration extends BaseEntity {
     @PrimaryGeneratedColumn()
-    admin_id!: number;
+    report_id!: number;
 
-    @Column({ type: 'varchar', length: 100, nullable: false })
-    name!: string;
+    @Column({
+        type: 'datetime',
+        default: () => 'CURRENT_TIMESTAMP',
+        nullable: false,
+    })
+    report_date!: Date;
 
-    @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
-    email!: string;
+    @Column({
+        type: 'int',
+        nullable: false,
+    })
+    total_accesses!: number;
 
-    @Column({ type: 'varchar', length: 255, nullable: false })
-    password!: string;
+    @Column({
+        type: 'int',
+        nullable: false,
+    })
+    total_absences!: number;
+
+    @Column({
+        type: 'text',
+        nullable: false,
+    })
+    frequent_users!: string;
+
+    @Column({
+        type: 'text',
+        nullable: false,
+    })
+    infrequent_users!: string;
 }
