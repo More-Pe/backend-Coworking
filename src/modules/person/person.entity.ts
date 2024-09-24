@@ -7,7 +7,7 @@ export enum Role {
     Admin = 'admin',
 }
 
-@Entity()
+@Entity('persons')
 
 export class Person extends BaseEntity { 
     @PrimaryGeneratedColumn()

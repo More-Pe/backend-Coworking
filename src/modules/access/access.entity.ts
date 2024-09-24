@@ -7,7 +7,7 @@ export enum Status {
     Exit = 'exit',
 }
 
-@Entity()
+@Entity('access')
 export class Access extends BaseEntity {
     @PrimaryGeneratedColumn()
     access_id!: number;

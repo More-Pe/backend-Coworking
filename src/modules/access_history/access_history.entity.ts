@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEnti
 import { Person } from '../person/person.entity';
 import { Room } from '../room/room.entity';
 
-@Entity()
+@Entity('access_history')
 export class AccessHistory extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	history_id!: number;
