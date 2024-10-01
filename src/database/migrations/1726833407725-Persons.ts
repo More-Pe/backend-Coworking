@@ -17,7 +17,7 @@ export class Persons1726833407725 implements MigrationInterface {
                     {
                         name: 'role',
                         type: 'enum',
-                        enum: ['user', 'admin'],
+                        enum: ['visitor', 'user', 'admin'],
                         isNullable: false,
                         default: `'user'`,
                     },
@@ -64,7 +64,14 @@ export class Persons1726833407725 implements MigrationInterface {
                         type: 'varchar',
                         length: '20',
                         isNullable: true,
-                    }
+                    },
+                    {
+                        name: 'frequency_status',
+                        type: 'enum',
+                        enum: ['frequent', 'infrequent', 'absent'],
+                        isNullable: false,
+                        default: `'absent'`,
+                    },
                 ],
             }),
             true

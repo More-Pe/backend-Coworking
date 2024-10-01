@@ -3,8 +3,15 @@ import { Access } from '../access/access.entity';
 import { AccessHistory } from '../access_history/access_history.entity';
 
 export enum Role {
+    Visitor = 'visitor',
     User = 'user',
     Admin = 'admin',
+}
+
+export enum Frequency_status {
+    Frequent = 'frequent',
+    Infrequent = 'infrequent',
+    Absent = 'absent',
 }
 
 @Entity('persons')
@@ -17,7 +24,7 @@ export class Person extends BaseEntity {
         type: 'enum',
         enum: Role,
         nullable: false,
-        default: Role.User,
+        default: Role.Visitor,
     })
     role!: Role;
 
@@ -41,6 +48,14 @@ export class Person extends BaseEntity {
 
     @Column({ type: 'varchar', length: 20, nullable: true })
     phone!: string;
+
+    @Column({
+        type: 'enum',
+        enum: Frequency_status,
+        nullable: false,
+        default: Frequency_status.Absent,
+    })
+    frequency_status!: Frequency_status;
 
     @OneToMany(() => Access, access => access.person)
     accesses!: Access[];
