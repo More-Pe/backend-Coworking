@@ -1,10 +1,18 @@
 import { Router } from 'express';
 import  { auth } from '../../middlewares/auth';
 import { isAdmin } from '../../middlewares/isAdmin';
-import { getCurrentAccess, getAccessHistory } from './person.controller';
+import { getPersons, getPersonById, getOwnProfile, createUserByAdmin, updatePersonByAdmin, updateOwnProfile, deletePerson, getCurrentAccess, getAccessHistory } from './person.controller';
 
 const router = Router();
 
+router.get('/profile', auth, getOwnProfile); 
+router.put('/profile', auth, updateOwnProfile); 
+
+router.get('/', auth, isAdmin, getPersons); 
+router.get('/:id', auth, isAdmin, getPersonById); 
+router.delete('/:id', auth, isAdmin, deletePerson); 
+router.post('/create', auth, isAdmin, createUserByAdmin); 
+router.put('/:id', auth, isAdmin, updatePersonByAdmin); 
 router.get('/:id/current-access', auth, isAdmin, getCurrentAccess);
 router.get('/:id/access-history', auth, isAdmin, getAccessHistory);
 

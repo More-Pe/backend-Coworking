@@ -1,5 +1,6 @@
+import bcrypt from 'bcrypt';
 import { AccessHistoryResponse } from '../../types/index';
-import { Person, Frequency_status } from './person.entity';
+import { Person, Role, Frequency_status } from './person.entity';
 import { Access } from '../access/access.entity';
 import { AccessHistory } from '../access_history/access_history.entity';
 import { IsNull, Between } from 'typeorm';
@@ -7,7 +8,81 @@ import { IsNull, Between } from 'typeorm';
 export class PersonService {
     static async getPersons(): Promise<Person[]> {
         return Person.find();
-      }
+    }
+
+    static async getPersonById(personId: number): Promise<Person | null> {
+        return Person.findOne({ where: { person_id: personId } });
+    }
+
+    public static async createUserByAdmin(
+        first_name: string,
+        last_name: string,
+        email: string,
+        password: string,
+        startup: string,
+        phone?: string,
+        dni?: string,
+        role: Role = Role.Visitor,
+        frequency_status?: Frequency_status
+    ): Promise<Person> {
+        const existingUser = await Person.findOne({ where: { email } });
+        if (existingUser) {
+            throw new Error('The email is already registered');
+        }
+    
+        const hashedPassword = bcrypt.hashSync(password, 10);
+    
+        const newUser = Person.create({
+            first_name,
+            last_name,
+            email,
+            password: hashedPassword,
+            startup,
+            phone,
+            dni,
+            role,
+            frequency_status: frequency_status || undefined,
+        });
+    
+        return await newUser.save();
+    }
+
+    static async updateOwnProfile(personId: number, updateData: Partial<Person>): Promise<Person | null> {
+        const person = await Person.findOne({ where: { person_id: personId } });
+        if (!person) {
+            throw new Error(`User not found with id ${personId}`);
+        }
+    
+        const allowedFields: Array<keyof Person> = ['first_name', 'last_name', 'startup', 'email', 'password', 'phone', 'dni'];
+    
+        const invalidFields = Object.keys(updateData).filter((key) => !allowedFields.includes(key as keyof Person));
+        if (invalidFields.length > 0) {
+            throw new Error(`Invalid fields: ${invalidFields.join(', ')}`);
+        }
+    
+        Object.assign(person, updateData);
+        return await person.save();
+    }
+    
+
+    static async updatePersonByAdmin(personId: number, updateData: Partial<Person>): Promise<Person | null> {
+        const person = await Person.findOne({ where: { person_id: personId } });
+        if (!person) {
+            throw new Error(`User not found with id ${personId}`);
+        }
+    
+        Object.assign(person, updateData);
+        return await person.save();
+    }
+
+    // Eliminar un usuario
+    static async deletePerson(personId: number): Promise<void> {
+        const person = await Person.findOne({ where: { person_id: personId } });
+        if (!person) {
+            throw new Error(`User not found with id ${personId}`);
+        }
+        await Person.remove(person);
+    }
     
 	static async getCurrentAccess(personId: number): Promise<Access | null> {
 		return Access.findOne({
