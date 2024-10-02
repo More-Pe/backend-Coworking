@@ -77,3 +77,14 @@ export const getAccessHistory = async (req: Request, res: Response) => {
         });
     }
 };
+export const updateFrequencyStatus = async (req: Request, res: Response) => {
+    try {
+      const persons = await PersonService.getPersons();
+      for (const person of persons) {
+        await PersonService.updateFrequencyStatus(person.person_id);
+      }
+      console.log('Frequency status successfully updated');
+    } catch (error) {
+      console.error('Error updating the frequency status:', error);
+    }
+  }
