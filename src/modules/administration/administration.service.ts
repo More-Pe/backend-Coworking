@@ -1,0 +1,189 @@
+import { Between, MoreThan } from 'typeorm';
+import { Person } from '../person/person.entity';
+import { Administration } from './administration.entity';
+import { Access, Status } from '../access/access.entity';
+import { Room } from '../room/room.entity';
+
+export class AdministrationService {
+    public static async generateDailyReport(reportDate?: Date): Promise<{ report: Administration; peakHour: string }> {
+        const date = reportDate || new Date();
+        date.setHours(0, 0, 0, 0);
+    
+        const nextDay = new Date(date);
+        nextDay.setDate(nextDay.getDate() + 1);
+    
+        const accessesToday = await Access.find({
+            where: {
+                entry_time: Between(date, nextDay),
+                status: Status.Entry,
+            },
+            relations: ['person'],
+        });
+    
+        const filteredAccesses = accessesToday.filter(access => {
+            const entryTime = new Date(access.entry_time);
+            const hour = entryTime.getHours();
+            const minute = entryTime.getMinutes();
+            return (hour > 8 || (hour === 8 && minute >= 30)) && (hour < 18 || (hour === 18 && minute <= 15));
+        });
+    
+        const totalAccesses = filteredAccesses.length;
+    
+        const usersTodayIds = [...new Set(filteredAccesses.map(access => access.person.person_id))];
+    
+        const frequentUsers = filteredAccesses
+            .filter(access => access.person.frequency_status === 'frequent')
+            .map(access => access.person.person_id)
+            .join(', ');
+    
+        const infrequentUsers = filteredAccesses
+            .filter(access => access.person.frequency_status === 'infrequent')
+            .map(access => access.person.person_id)
+            .join(', ');
+    
+        const allUsers = await Person.find();
+        const absentUsers = allUsers.filter(user => !usersTodayIds.includes(user.person_id));
+        const totalAbsences = absentUsers.length;
+    
+        const accessHours: { [hour: number]: number } = {};
+        filteredAccesses.forEach(access => {
+            const hour = new Date(access.entry_time).getHours();
+            accessHours[hour] = (accessHours[hour] || 0) + 1;
+        });
+    
+        let peakHour = 'N/A';  
+        if (Object.keys(accessHours).length > 0) {
+            peakHour = Object.keys(accessHours).reduce((a, b) => accessHours[+a] > accessHours[+b] ? a : b);
+        }
+    
+        const report = Administration.create({
+            total_accesses: totalAccesses,
+            total_absences: totalAbsences,
+            frequent_users: frequentUsers,
+            infrequent_users: infrequentUsers,
+            report_date: date,
+        });
+    
+        await report.save();
+    
+        return {
+            report,
+            peakHour: peakHour !== 'N/A' ? `${peakHour}:00-${+peakHour + 1}:00` : 'N/A',
+        };
+    }
+    
+    public static async getReportsInRange(start_date: string, end_date: string): Promise<Administration[]> {
+        const start = new Date(start_date);
+        const end = new Date(end_date);
+
+        end.setHours(23, 59, 59, 999);
+
+        const reports = await Administration.find({
+            where: {
+                report_date: Between(start, end),
+            },
+            order: {
+                report_date: 'ASC', 
+            },
+        });
+
+        return reports;
+    }
+
+    private static formatDuration(durationInMs: number): string {
+        const hours = Math.floor(durationInMs / 3600000);
+        const minutes = Math.floor((durationInMs % 3600000) / 60000);
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+
+    public static async getRoomUsageStats(): Promise<any> {
+        const rooms = await Room.find({ relations: ['accesses'] });
+    
+        const roomStats = await Promise.all(rooms.map(async room => {
+            const totalUses = room.accesses.length;
+    
+            let totalStayDuration = 0;
+            let averageStay = 0;
+            if (totalUses > 0) {
+                totalStayDuration = room.accesses.reduce((acc, access) => {
+                    if (access.exit_time) {
+                        const stayDuration = new Date(access.exit_time).getTime() - new Date(access.entry_time).getTime();
+                        return acc + stayDuration;
+                    }
+                    return acc;
+                }, 0);
+                averageStay = totalStayDuration / totalUses;
+            }
+    
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+    
+            const accessesToday = room.accesses.filter(access => {
+                const entryTime = new Date(access.entry_time);
+                const hour = entryTime.getHours();
+                const minute = entryTime.getMinutes();
+    
+                const isWithinWorkingHours = 
+                    (hour > 8 || (hour === 8 && minute >= 30)) && 
+                    (hour < 18 || (hour === 18 && minute <= 15));
+    
+                return entryTime >= today && entryTime < tomorrow && isWithinWorkingHours;
+            });
+    
+            const allUsers = await Person.find();
+            const usersTodayIds = [...new Set(accessesToday.filter(access => access.person).map(access => access.person.person_id))];
+            const absentUsers = allUsers.filter(user => !usersTodayIds.includes(user.person_id));
+            const absences = absentUsers.length;
+    
+            const accessHours: { [hour: number]: number } = {};
+            accessesToday.forEach(access => {
+                const hour = new Date(access.entry_time).getHours();
+                const minute = new Date(access.entry_time).getMinutes();
+                
+                if ((hour > 8 || (hour === 8 && minute >= 30)) && (hour < 18 || (hour === 18 && minute <= 15))) {
+                    accessHours[hour] = (accessHours[hour] || 0) + 1;
+                }
+            });
+    
+            let peakHour = 'N/A';
+            if (Object.keys(accessHours).length > 0) {
+                const peakHourNum = Object.keys(accessHours).reduce((a, b) => accessHours[+a] > accessHours[+b] ? a : b);
+                peakHour = `${peakHourNum}:00-${+peakHourNum + 1}:00}`;
+            }
+                const accessTimestamps = room.accesses
+                .map(access => new Date(access.entry_time).getTime())
+                .filter(timestamp => {
+                    const entryTime = new Date(timestamp);
+                    const hour = entryTime.getHours();
+                    const minute = entryTime.getMinutes();
+    
+                    return (hour > 8 || (hour === 8 && minute >= 30)) && (hour < 18 || (hour === 18 && minute <= 15));
+                })
+                .sort((a, b) => a - b);
+    
+            let maxGap = 0;
+            if (accessTimestamps.length > 1) {
+                for (let i = 1; i < accessTimestamps.length; i++) {
+                    const gap = accessTimestamps[i] - accessTimestamps[i - 1];
+                    if (gap > maxGap) {
+                        maxGap = gap;
+                    }
+                }
+            }
+            const longestPeriodWithoutUse = maxGap > 0 ? this.formatDuration(maxGap) : 'N/A';
+    
+            return {
+                room_name: room.room_name,
+                totalUses,
+                averageStay: averageStay ? this.formatDuration(averageStay) + " hours" : 'N/A',
+                absences,
+                peakHour,
+                longestPeriodWithoutUse,
+            };
+        }));
+    
+        return roomStats;
+    }
+}
