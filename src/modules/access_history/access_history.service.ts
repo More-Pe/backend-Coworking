@@ -26,7 +26,7 @@ export class AccessHistoryService {
             action: history.action,
             person: {
                 first_name: history.person.first_name,
-                startup: history.person.startup,
+                startup: history.person.startup.name, // Assuming 'name' is the string property you need
                 email: history.person.email,
             }
         }));
@@ -57,7 +57,7 @@ export class AccessHistoryService {
             action: history.action,
             person: {
                 first_name: history.person.first_name,
-                startup: history.person.startup,
+                startup: history.person.startup.name, // Assuming 'name' is the string property you need
                 email: history.person.email,
             }
         }));

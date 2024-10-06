@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { Access } from '../access/access.entity';
+import { Startup } from '../startup/startup.entity';
 import { AccessHistory } from '../access_history/access_history.entity';
 
 export enum Role {
@@ -34,8 +35,9 @@ export class Person extends BaseEntity {
     @Column({ type: 'varchar', length: 100, nullable: false })
     last_name!: string;
 
-    @Column({ type: 'varchar', length: 100, nullable: false })
-    startup!: string;
+    @ManyToOne(() => Startup, startup => startup.persons)
+    @JoinColumn({ name: 'startup', referencedColumnName: 'name'})
+    startup!: Startup;
 
     @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
     email!: string;
@@ -63,6 +65,3 @@ export class Person extends BaseEntity {
     @OneToMany(() => AccessHistory, history => history.person)
     access_histories!: AccessHistory[];
 }
-
-
-

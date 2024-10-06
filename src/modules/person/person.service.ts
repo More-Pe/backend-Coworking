@@ -32,16 +32,12 @@ export class PersonService {
     
         const hashedPassword = bcrypt.hashSync(password, 10);
     
-        const newUser = Person.create({
+        const newUser = await Person.create({
             first_name,
             last_name,
             email,
             password: hashedPassword,
-            startup,
-            phone,
-            dni,
-            role,
-            frequency_status: frequency_status || undefined,
+            startup: { name: startup },
         });
     
         return await newUser.save();
