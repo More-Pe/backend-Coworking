@@ -3,16 +3,16 @@ import { AuthService } from './auth.service';
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { first_name, email, password, startup } = req.body;
+        const { first_name, last_name, email, password, startup } = req.body;
 
-        if (!email || !password || !startup) {
+        if (!first_name || !last_name || !email || !password || !startup) {
             return res.status(400).json({
                 success: false,
-                message: 'Email, password, and startup are required',
+                message: 'First name, last name, email, password and startup are required',
             });
         }
 
-        const newPerson = await AuthService.register(first_name, email, password, startup);
+        const newPerson = await AuthService.register(first_name, last_name, email, password, startup);
 
         return res.status(201).json({
             success: true,

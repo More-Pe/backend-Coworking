@@ -19,7 +19,7 @@ export class Persons1726833407725 implements MigrationInterface {
                         type: 'enum',
                         enum: ['visitor', 'user', 'admin'],
                         isNullable: false,
-                        default: `'user'`,
+                        default: `'visitor'`,
                     },
                     {
                         name: 'first_name',
@@ -31,7 +31,7 @@ export class Persons1726833407725 implements MigrationInterface {
                         name: 'last_name',
                         type: 'varchar',
                         length: '100',
-                        isNullable: true,
+                        isNullable: false,
                     },
                     {
                         name: 'startup',

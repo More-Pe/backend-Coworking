@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export class AuthService {
 
-    public static async register(first_name: string, email: string, password: string, startup: string) {
+    public static async register(first_name: string, last_name: string, email: string, password: string, startup: string) {
 
         const existingUser = await Person.findOne({ where: { email } });
         if (existingUser) {
@@ -15,6 +15,7 @@ export class AuthService {
 
         const newPerson = Person.create({
             first_name: first_name,
+            last_name: last_name,
             email: email,
             password: hashedPassword,
             startup: startup,

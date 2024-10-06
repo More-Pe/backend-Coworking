@@ -31,7 +31,7 @@ export class Person extends BaseEntity {
     @Column({ type: 'varchar', length: 100, nullable: false })
     first_name!: string;
 
-    @Column({ type: 'varchar', length: 100, nullable: true })
+    @Column({ type: 'varchar', length: 100, nullable: false })
     last_name!: string;
 
     @Column({ type: 'varchar', length: 100, nullable: false })

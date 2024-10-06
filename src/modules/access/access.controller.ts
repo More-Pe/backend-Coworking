@@ -4,7 +4,7 @@ import { AccessService } from './access.service';
 export const registerEntry = async (req: Request, res: Response) => {
     try {
         const { room_id } = req.body;
-        const person_id = req.tokenData?.person_id; // Verificamos si el token contiene el ID de la persona
+        const person_id = req.tokenData?.person_id;
 
         if (!person_id) {
             return res.status(400).json({
