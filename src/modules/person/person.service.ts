@@ -7,7 +7,10 @@ import { IsNull, Between } from 'typeorm';
 
 export class PersonService {
     static async getPersons(): Promise<Person[]> {
-        return Person.find();
+        return Person.find({
+            relations: ['startup'],
+            select: ['person_id', 'role', 'first_name', 'last_name', 'email', 'dni', 'phone', 'frequency_status', 'startup']
+        });
     }
 
     static async getPersonById(personId: number): Promise<Person | null> {
@@ -29,7 +32,6 @@ export class PersonService {
         if (existingUser) {
             throw new Error('The email is already registered');
         }
-    
         const hashedPassword = bcrypt.hashSync(password, 10);
     
         const newUser = await Person.create({
@@ -66,7 +68,6 @@ export class PersonService {
         if (!person) {
             throw new Error(`User not found with id ${personId}`);
         }
-    
         Object.assign(person, updateData);
         return await person.save();
     }

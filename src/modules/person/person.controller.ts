@@ -4,9 +4,20 @@ import { PersonService } from './person.service';
 export const getPersons = async (req: Request, res: Response) => {
     try {
         const persons = await PersonService.getPersons();
+        const formattedPersons = persons.map(person => ({
+            person_id: person.person_id,
+            role: person.role,
+            first_name: person.first_name,
+            last_name: person.last_name,
+            email: person.email,
+            dni: person.dni,
+            phone: person.phone,
+            frequency_status: person.frequency_status,
+            startup: person.startup ? person.startup.name : null
+        }));
         return res.status(200).json({
             success: true,
-            data: persons,
+            data: formattedPersons,
         });
     } catch (error: any) {
         return res.status(500).json({
