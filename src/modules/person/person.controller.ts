@@ -69,6 +69,7 @@ export const getOwnProfile = async (req: Request, res: Response) => {
                 last_name: person.last_name,
                 startup: person.startup,
                 email: person.email,
+                password: person.password,
                 phone: person.phone,
                 role: person.role,
                 frequency_status: person.frequency_status,

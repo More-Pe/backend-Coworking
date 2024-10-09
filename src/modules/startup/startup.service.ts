@@ -1,15 +1,14 @@
-import { Startup } from './startup.entity';
+import { Startup, Program } from './startup.entity';
 import { Person } from '../person/person.entity';
 
 export class StartupService {
   public static async getStartups(): Promise<Startup[]> {
-    return await Startup.find({ relations: ['persons'] });
+    return await Startup.find();
   }
 
   public static async getStartupById(startup_id: number): Promise<Startup> {
     const startup = await Startup.findOne({
-      where: { startup_id },
-      relations: ['persons'],
+      where: { startup_id }
     });
     if (!startup) {
       throw new Error(`Startup no encontrado con id ${startup_id}`);
@@ -18,10 +17,14 @@ export class StartupService {
   }
 
   public static async createStartup(data: Partial<Startup>): Promise<Startup> {
+    if (!data.program || !Object.values(Program).includes(data.program as Program)) {
+      throw new Error('Invalid program. Should be one of this: ' + Object.values(Program).join(', '));
+    }
+
     const startup = Startup.create({
       name: data.name,
       description: data.description,
-      program: data.program,
+      program: data.program as Program,
     });
     return await startup.save();
   }
@@ -29,8 +32,13 @@ export class StartupService {
   public static async updateStartup(startup_id: number, data: Partial<Startup>): Promise<Startup> {
     const startup = await Startup.findOne({ where: { startup_id } });
     if (!startup) {
-      throw new Error(`Startup no encontrado con id ${startup_id}`);
+      throw new Error(`Startup not found ${startup_id}`);
     }
+
+    if (data.program && !Object.values(Program).includes(data.program as Program)) {
+      throw new Error('Invalid program. Should be one of this: ' + Object.values(Program).join(', '));
+    }
+
     Object.assign(startup, data);
     return await startup.save();
   }
@@ -38,7 +46,7 @@ export class StartupService {
   public static async deleteStartup(startup_id: number): Promise<void> {
     const startup = await Startup.findOne({ where: { startup_id } });
     if (!startup) {
-      throw new Error(`Startup no encontrado con id ${startup_id}`);
+      throw new Error(`Startup not found ${startup_id}`);
     }
     await Startup.remove(startup);
   }
@@ -49,7 +57,7 @@ export class StartupService {
       relations: ['persons'],
     });
     if (!startup) {
-      throw new Error(`Startup no encontrado con id ${startup_id}`);
+      throw new Error(`Startup not found ${startup_id}`);
     }
     return startup.persons;
   }

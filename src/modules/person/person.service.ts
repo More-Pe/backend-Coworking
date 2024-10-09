@@ -71,7 +71,6 @@ export class PersonService {
         return await person.save();
     }
 
-    // Eliminar un usuario
     static async deletePerson(personId: number): Promise<void> {
         const person = await Person.findOne({ where: { person_id: personId } });
         if (!person) {

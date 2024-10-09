@@ -7,6 +7,7 @@ import administrationRouter from './modules/administration/administration.routes
 import roomRouter from './modules/room/room.routes';
 import personRouter from './modules/person/person.routes';
 import accessHistoryRouter from './modules/access_history/access_history.routes';
+import startupRouter from './modules/startup/startup.routes';
 import cors from 'cors';
 import cron from 'node-cron';
 import { PersonService } from './modules/person/person.service';
@@ -18,7 +19,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5174',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -29,6 +30,7 @@ app.use('/api/accesses', accessRouter);
 app.use('/api/administration', administrationRouter);
 app.use('/api/rooms', roomRouter);
 app.use('/api/persons', personRouter);
+app.use('/api/startups', startupRouter);
 app.use('/api/access_histories', accessHistoryRouter);
 
 const PORT = process.env.PORT || 4000;

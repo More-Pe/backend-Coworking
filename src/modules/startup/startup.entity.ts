@@ -3,7 +3,7 @@ import { Person } from '../person/person.entity';
 
 export enum Program {
     PreSeed2023 = 'Pre-Seed 2023',
-    CiberSecurity = 'Cibersecutity Startup'
+    CiberSecurity = 'Cibersecurity Startup'
 }
 
 @Entity('startups')
