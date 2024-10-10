@@ -29,3 +29,22 @@ export interface AccessHistoryResponse {
         email: string;
     };
 }
+
+export interface DailyReportResponse {
+    report_date: Date;
+    total_accesses: {
+        count: number;
+        persons: Array<{
+            user_id: number;
+            first_name: string;
+            last_name: string;
+            startup: string;
+            last_access: Date;
+        }>;
+    };
+    total_absences: number;
+    frequent_users: number;
+    infrequent_users: number;
+    peak_hour: string;
+    accesses_by_room: { [key: string]: number };
+}
