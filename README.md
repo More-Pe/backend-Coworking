@@ -10,14 +10,14 @@ Whether you are a startup, freelancer, or a team looking for a collaborative env
 
 ## 🛠️ Features
 
-- **Access Logging**: The system allows for the registration of individuals accessing different rooms, capturing essential details such as access time, room information, and user identity.
-- **Access History**: Administrators can review a complete history of all access records, providing insights into room usage and occupancy patterns.
-- **User Management**: The application supports the management of user profiles, enabling the addition, updating, and removal of users while ensuring that only authorized personnel can access specific areas.
-- **Notifications**: Users receive notifications for significant actions, such as accessing restricted areas, keeping them informed about important events.
-- **Reporting**: The system generates detailed reports based on access history, offering insights into usage patterns and security, and allowing for data export for further analysis.
-- **Startup Management**: The application includes functionalities for managing startup information, allowing for the creation, updating, and deletion of startup records, as well as retrieving associated personnel.
-- **Room Management**: Users can create, update, and delete room records, as well as view the current state of rooms, including occupancy and capacity details.
-- **Access Control**: The application provides mechanisms for checking in and checking out of rooms, ensuring accurate tracking of room usage and reservations.
+- **🔒 Access Logging**: The system allows for the registration of individuals accessing different rooms, capturing essential details such as access time, room information, and user identity.
+- **📜 Access History**: Administrators can review a complete history of all access records, providing insights into room usage and occupancy patterns.
+- **👥 User Management**: The application supports the management of user profiles, enabling the addition, updating, and removal of users while ensuring that only authorized personnel can access specific areas.
+- **📊 Reporting**: The system generates detailed reports based on access history, offering insights into usage patterns and security, and allowing for data export for further analysis.
+- **🚀 Startup Management**: The application includes functionalities for managing startup information, allowing for the creation, updating, and deletion of startup records, as well as retrieving associated personnel.
+- **🏢 Room Management**: Users can create, update, and delete room records, as well as view the current state of rooms, including occupancy and capacity details.
+- **🔐 Access Control**: The application provides mechanisms for checking in and checking out of rooms, ensuring accurate tracking of room usage and reservations.
+
 
 ## Deploy 🚀
 
@@ -185,7 +185,7 @@ Throughout the program, I had the privilege of learning from experienced instruc
 
 I also want to thank my fellow classmates for their camaraderie and collaboration, specially to Yoana. Working together on projects and sharing knowledge and ideas was an essential part of my learning experience.
 
-###Thank you!
+### Thank you!
 
 ## 📞 Contact
 
