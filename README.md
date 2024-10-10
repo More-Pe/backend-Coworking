@@ -1,8 +1,8 @@
-# "Las Naves - Coworking "
+# 💼 Las Naves - Coworking Managment System
 
-This is an innovative web application designed to streamline the management of coworking spaces. This platform provides a comprehensive solution for tracking room access, managing user profiles, and optimizing space utilization. 
+This is an innovative web application designed to streamline the management of Las Naves coworking space. This platform provides a comprehensive solution for tracking room access, managing user profiles, and optimizing space utilization. 
 
-The application caters to both administrators and users, offering features that enhance security, improve operational efficiency, and facilitate communication within the coworking environment. With a user-friendly interface, **Las Naves - Coworking** allows users to easily navigate through available rooms, make reservations, and access important information regarding their usage.
+The application caters to both administrators and users, offering features that enhance security, improve operational efficiency, and facilitate communication within the coworking environment. With a user-friendly interface, **Las Naves - Coworking** allows users to easily navigate through available rooms and access important information regarding their usage.
 
 Built with modern web technologies, including TypeScript, Express.js, and TypeORM, the application ensures a robust and scalable architecture. It is designed to adapt to the evolving needs of coworking spaces, making it an essential tool for organizations looking to enhance their workspace management.
 
@@ -72,29 +72,36 @@ To perform tests, you can use the following pre-registered users that are define
 Email: admin@admin.com Password: 123456789
 
 **Regular User** 
-Email: johndoe@example.com Password: 123456789
+Email: user@user.com Password: 123456789
+
+**Visitor User** 
+Email: visitor@visitor.com Password: 123456789
 
 You can use these credentials to log in and explore the system's functionalities.
 
 6. Testing the System
 Once the development server is running, open your browser and navigate to http://localhost:5173 (or the port indicated in your terminal). From there, you can interact with the application.
 
-## 🗄️ Connecting to the Backend
+## 🖥️ Connecting to the Frontend
 Read the instructions at:
 
-[Frontend Social Media](https://github.com/More-Pe/frontend-Coworking)
+[Frontend - Las Naves Coworking](https://github.com/More-Pe/frontend-Coworking)
 
 
 ## 🌐 Endpoints
 
-### 🔒 Authentication
+<details>
+<summary>🔒 Authentication</summary>
 
 | Method | URI       | Action         | Auth                | Body                                                                                   |
 |--------|-----------|----------------|---------------------|----------------------------------------------------------------------------------------|
 | POST   | /api/register  | Register user  | N/A (public)        | `{  "email": "userEmail", "password": "userPassword" }` |
 | POST   | /api/login     | Login user     | N/A (public)        | `{ "email": "userEmail", "password": "userPassword" }`                                |
 
-## 👤 Persons
+</details>
+
+<details>
+<summary>👤 Persons</summary>
 
 | Method | URI                           | Action                                  | Auth      | Body                                                                                   |
 |--------|-------------------------------|-----------------------------------------|-----------|----------------------------------------------------------------------------------------|
@@ -106,8 +113,10 @@ Read the instructions at:
 | PUT    | /api/persons/:id              | Update a person by ID                  | Token (admin) | `{ "first_name": "NewName", "last_name": "NewLastName", "email": "newemail@example.com" }` |
 | DELETE | /api/persons/:id              | Delete a person by ID                  | Token (admin) | N/A                                                                                    |
 
+</details>
 
-### 🏠 Rooms
+<details>
+<summary>🏠 Rooms</summary>
 
 | Method | URI                          | Action                          | Auth        | Body                                                                                   |
 |--------|------------------------------|---------------------------------|-------------|----------------------------------------------------------------------------------------|
@@ -116,9 +125,12 @@ Read the instructions at:
 | GET    | /api/rooms/:id/current-state  | Display current state of a room | Token (user) | N/A                                                                                    |
 | POST   | /api/rooms                   | Create a new room              | Token (admin) | `{ "room_name": "Room Name", "capacity": 10, "room_type": "Meeting" }`              |
 | PUT    | /api/rooms/:id               | Update a room by ID            | Token (admin) | `{ "room_name": "New Room Name", "capacity": 15, "room_type": "Conference" }`       |
-| DELETE | /api/rooms/:id               | Delete room by ID              | Token (admin) | N/A                                                                                    |                                                                                   |
+| DELETE | /api/rooms/:id               | Delete room by ID              | Token (admin) | N/A                                                                                    |
 
-### 🗓 Access
+</details>
+
+<details>
+<summary>🗓 Access</summary>
 
 | Method | URI                          | Action                          | Auth      | Body                                                |
 |--------|------------------------------|---------------------------------|-----------|-----------------------------------------------------|
@@ -128,14 +140,20 @@ Read the instructions at:
 | POST   | /api/access/check-out/:id    | Check-out to a booking by ID    | Token (user) | N/A                                                 |
 | DELETE | /api/access/cancel/:id       | Delete a booking by ID          | Token (user) | N/A                                                 |
 
-### 🗓 Access History
+</details>
+
+<details>
+<summary>🗓 Access History</summary>
 
 | Method | URI                          | Action                          | Auth      | Body                                                |
 |--------|------------------------------|---------------------------------|-----------|-----------------------------------------------------|
 | GET    | /api/history/period          | View all accesses for a date period | Token (admin) | `{ "start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD"}` |
 | GET    | /api/history/room/:id        | View access history for a room  | Token (admin) | N/A                                                 |
 
-### 📚 Administration
+</details>
+
+<details>
+<summary>📚 Administration</summary>
 
 | Method | URI                          | Action                          | Auth      | Body                                                |
 |--------|------------------------------|---------------------------------|-----------|-----------------------------------------------------|
@@ -143,7 +161,10 @@ Read the instructions at:
 | GET    | /api/report/room-usage/:id   | Create report for a room by ID | Token (admin) | N/A                                                 |
 | GET    | /api/report/period           | Create a report for a specific date period | Token (admin) | `{ "start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD"}` |
 
-### 🚀 Startups
+</details>
+
+<details>
+<summary>🚀 Startups</summary>
 
 | Method | URI                          | Action                          | Auth      | Body                                                |
 |--------|------------------------------|---------------------------------|-----------|-----------------------------------------------------|
@@ -153,6 +174,8 @@ Read the instructions at:
 | PUT    | /api/startups/:id            | Update a startup by ID         | Token (admin) | `{ "name": "newName", "description": "newDescription", "program": "NewProgram" }` |
 | DELETE | /api/startups/:id            | Delete a startup by ID         | Token (admin) | N/A                                                 |
 | GET    | /api/startups/:id/persons    | Retrieve persons associated with a startup | Token (admin) | N/A                                                 |
+
+</details>
 
 ## 🙌 Acknowledgments
 
