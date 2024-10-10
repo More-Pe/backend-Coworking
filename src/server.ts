@@ -30,7 +30,7 @@ app.use('/api/accesses', accessRouter);
 app.use('/api/administration', administrationRouter);
 app.use('/api/rooms', roomRouter);
 app.use('/api/persons', personRouter);
-app.use('/api/startups', startupRouter);
+app.use('/api/startups', startupRouter)
 app.use('/api/access_histories', accessHistoryRouter);
 
 const PORT = process.env.PORT || 4000;

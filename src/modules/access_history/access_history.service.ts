@@ -12,7 +12,7 @@ export class AccessHistoryService {
             where: {
                 access_time: Between(new Date(startDate), adjustedEndDate),
             },
-            relations: ['person', 'room'],
+            relations: ['person', 'room', 'person.startup'],
         });
 
         return accessHistories.map(history => ({
@@ -26,7 +26,7 @@ export class AccessHistoryService {
             action: history.action,
             person: {
                 first_name: history.person.first_name,
-                startup: history.person.startup.name, // Assuming 'name' is the string property you need
+                startup: history.person.startup?.name || 'N/A',
                 email: history.person.email,
             }
         }));
@@ -43,7 +43,7 @@ export class AccessHistoryService {
 
         const accessHistories = await AccessHistory.find({
             where: whereClause,
-            relations: { person: true, room: true },
+            relations: ['person', 'room', 'person.startup'],
         });
 
         return accessHistories.map(history => ({
@@ -57,7 +57,7 @@ export class AccessHistoryService {
             action: history.action,
             person: {
                 first_name: history.person.first_name,
-                startup: history.person.startup.name, // Assuming 'name' is the string property you need
+                startup: history.person.startup?.name || 'N/A',
                 email: history.person.email,
             }
         }));

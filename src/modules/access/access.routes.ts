@@ -7,6 +7,6 @@ const router = Router();
 
 router.post('/entry', auth, registerEntry); //OK
 router.post('/exit', auth, registerExit); //OK
-router.get('/current/room/:room_id', auth, getCurrentPeopleInRoom); //OK
+router.get('/current/room/:room_id', getCurrentPeopleInRoom); //OK
 
 export default router;

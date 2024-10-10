@@ -33,6 +33,7 @@ export const getAccessHistories = async (req: Request, res: Response) => {
 export const getAccessHistoriesByRoom = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
+        const { start_date, end_date } = req.query;
 
         if (!id) {
             return res.status(400).json({
@@ -49,8 +50,11 @@ export const getAccessHistoriesByRoom = async (req: Request, res: Response) => {
             });
         }
 
-        const { start_date, end_date } = req.query;
-        const accessHistories = await AccessHistoryService.getAccessHistoriesByRoom(roomId, start_date as string, end_date as string);
+        const accessHistories = await AccessHistoryService.getAccessHistoriesByRoom(
+            roomId, 
+            start_date as string, 
+            end_date as string
+        );
 
         return res.status(200).json({
             success: true,
