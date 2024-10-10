@@ -79,22 +79,96 @@ export class AdministrationService {
         return report;
     }
     
-    public static async getReportsInRange(start_date: string, end_date: string): Promise<Administration[]> {
+    public static async getReportsInRange(
+        start_date: string, 
+        end_date: string, 
+        page: number = 1, 
+        limit: number = 10
+    ): Promise<{ reports: DailyReportResponse[], total: number, page: number, totalPages: number }> {
         const start = new Date(start_date);
         const end = new Date(end_date);
-
         end.setHours(23, 59, 59, 999);
 
-        const reports = await Administration.find({
-            where: {
-                report_date: Between(start, end),
-            },
-            order: {
-                report_date: 'ASC', 
-            },
-        });
+        const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24)) + 1;
+        const totalPages = Math.ceil(totalDays / limit);
+        const skip = (page - 1) * limit;
 
-        return reports;
+        const reports: DailyReportResponse[] = [];
+
+        for (let i = skip; i < Math.min(skip + limit, totalDays); i++) {
+            const date = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+            const nextDay = new Date(date);
+            nextDay.setDate(nextDay.getDate() + 1);
+
+            const accessHistories = await AccessHistory.find({
+                where: {
+                    access_time: Between(date, nextDay),
+                    action: 'entry'
+                },
+                relations: ['person', 'room', 'person.startup'],
+            });
+
+            const filteredAccesses = accessHistories.filter(access => {
+                const accessTime = new Date(access.access_time);
+                return (accessTime.getHours() > 8 || (accessTime.getHours() === 8 && accessTime.getMinutes() >= 30)) &&
+                       (accessTime.getHours() < 18 || (accessTime.getHours() === 18 && accessTime.getMinutes() <= 15));
+            });
+
+            const totalAccesses = filteredAccesses.length;
+            const usersTodayIds = [...new Set(filteredAccesses.map(access => access.person.person_id))];
+            const frequentUsers = filteredAccesses.filter(access => access.person.frequency_status === 'frequent');
+            const infrequentUsers = filteredAccesses.filter(access => access.person.frequency_status === 'infrequent');
+
+            const allUsers = await Person.find();
+            const absentUsers = allUsers.filter(user => !usersTodayIds.includes(user.person_id));
+            const totalAbsences = absentUsers.length;
+
+            const accessHours: { [hour: number]: number } = {};
+            filteredAccesses.forEach(access => {
+                const hour = new Date(access.access_time).getHours();
+                accessHours[hour] = (accessHours[hour] || 0) + 1;
+            });
+
+            let peakHour = 'N/A';
+            if (Object.keys(accessHours).length > 0) {
+                const peakHourNum = Object.keys(accessHours).reduce((a, b) => accessHours[+a] > accessHours[+b] ? a : b);
+                peakHour = `${peakHourNum}:00-${+peakHourNum + 1}:00`;
+            }
+
+            const accessesByRoom = filteredAccesses.reduce((acc, access) => {
+                const roomName = access.room.room_name;
+                acc[roomName] = (acc[roomName] || 0) + 1;
+                return acc;
+            }, {} as {[key: string]: number});
+
+            const report: DailyReportResponse = {
+                report_date: new Date(date),
+                total_accesses: {
+                    count: totalAccesses,
+                    persons: filteredAccesses.map(access => ({
+                        user_id: access.person.person_id,
+                        first_name: access.person.first_name,
+                        last_name: access.person.last_name,
+                        startup: access.person.startup.name,
+                        last_access: access.access_time,
+                    })),
+                },
+                total_absences: totalAbsences,
+                frequent_users: frequentUsers.length,
+                infrequent_users: infrequentUsers.length,
+                peak_hour: peakHour,
+                accesses_by_room: accessesByRoom,
+            };
+
+            reports.push(report);
+        }
+
+        return {
+            reports,
+            total: totalDays,
+            page,
+            totalPages
+        };
     }
 
     private static formatDuration(durationInMs: number): string {

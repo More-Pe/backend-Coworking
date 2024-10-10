@@ -31,7 +31,7 @@ export const generateDailyReport = async (req: Request, res: Response) => {
 
 export const getReportsInRange = async (req: Request, res: Response) => {
     try {
-        const { start_date, end_date } = req.query;
+        const { start_date, end_date, page, limit } = req.query;
 
         if (!start_date || !end_date) {
             return res.status(400).json({
@@ -42,15 +42,31 @@ export const getReportsInRange = async (req: Request, res: Response) => {
 
         const startDate = String(start_date);
         const endDate = String(end_date);
-        const reports = await AdministrationService.getReportsInRange(startDate, endDate);
+        const pageNumber = page ? parseInt(String(page), 10) : 1;
+        const limitNumber = limit ? parseInt(String(limit), 10) : 10;
+
+        const { reports, total, page: currentPage, totalPages } = await AdministrationService.getReportsInRange(
+            startDate, 
+            endDate, 
+            pageNumber, 
+            limitNumber
+        );
 
         return res.status(200).json({
             success: true,
             message: 'Reports retrieved successfully',
-            data: reports,
+            data: {
+                reports,
+                pagination: {
+                    total,
+                    page: currentPage,
+                    totalPages
+                }
+            },
         });
     } catch (error: any) {
-        return res.status(400).json({
+        console.error('Error in getReportsInRange:', error);
+        return res.status(500).json({
             success: false,
             message: error.message || 'Error retrieving reports',
         });
