@@ -21,7 +21,8 @@ export const generateDailyReport = async (req: Request, res: Response) => {
             data: report,
         });
     } catch (error: any) {
-        return res.status(400).json({
+        console.error('Error in generateDailyReport:', error);
+        return res.status(500).json({
             success: false,
             message: error.message || 'Error generating daily report',
         });
@@ -39,8 +40,8 @@ export const getReportsInRange = async (req: Request, res: Response) => {
             });
         }
 
-        const startDate = String(start_date); // Ensure start_date is a string
-        const endDate = String(end_date); // Ensure end_date is a string
+        const startDate = String(start_date);
+        const endDate = String(end_date);
         const reports = await AdministrationService.getReportsInRange(startDate, endDate);
 
         return res.status(200).json({

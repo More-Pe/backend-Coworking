@@ -1,29 +1,31 @@
-import { Between, MoreThan } from 'typeorm';
+import { Between, MoreThan, LessThan } from 'typeorm';
 import { Person } from '../person/person.entity';
 import { Administration } from './administration.entity';
+import { AccessHistory } from '../access_history/access_history.entity';
 import { Access, Status } from '../access/access.entity';
 import { Room } from '../room/room.entity';
+import { DailyReportResponse } from '../../types';
 
 export class AdministrationService {
-    public static async generateDailyReport(reportDate?: Date): Promise<{ report: Administration; peakHour: string }> {
+    public static async generateDailyReport(reportDate?: Date): Promise<DailyReportResponse> {
         const date = reportDate || new Date();
         date.setHours(0, 0, 0, 0);
     
         const nextDay = new Date(date);
         nextDay.setDate(nextDay.getDate() + 1);
     
-        const accessesToday = await Access.find({
+        const accessHistoryToday = await AccessHistory.find({
             where: {
-                entry_time: Between(date, nextDay),
-                status: Status.Entry,
+                access_time: Between(date, nextDay),
+                action: 'entry'
             },
-            relations: ['person'],
+            relations: ['person', 'room', 'person.startup'],
         });
     
-        const filteredAccesses = accessesToday.filter(access => {
-            const entryTime = new Date(access.entry_time);
-            const hour = entryTime.getHours();
-            const minute = entryTime.getMinutes();
+        const filteredAccesses = accessHistoryToday.filter(access => {
+            const accessTime = new Date(access.access_time);
+            const hour = accessTime.getHours();
+            const minute = accessTime.getMinutes();
             return (hour > 8 || (hour === 8 && minute >= 30)) && (hour < 18 || (hour === 18 && minute <= 15));
         });
     
@@ -31,15 +33,8 @@ export class AdministrationService {
     
         const usersTodayIds = [...new Set(filteredAccesses.map(access => access.person.person_id))];
     
-        const frequentUsers = filteredAccesses
-            .filter(access => access.person.frequency_status === 'frequent')
-            .map(access => access.person.person_id)
-            .join(', ');
-    
-        const infrequentUsers = filteredAccesses
-            .filter(access => access.person.frequency_status === 'infrequent')
-            .map(access => access.person.person_id)
-            .join(', ');
+        const frequentUsers = filteredAccesses.filter(access => access.person.frequency_status === 'frequent');
+        const infrequentUsers = filteredAccesses.filter(access => access.person.frequency_status === 'infrequent');
     
         const allUsers = await Person.find();
         const absentUsers = allUsers.filter(user => !usersTodayIds.includes(user.person_id));
@@ -47,29 +42,41 @@ export class AdministrationService {
     
         const accessHours: { [hour: number]: number } = {};
         filteredAccesses.forEach(access => {
-            const hour = new Date(access.entry_time).getHours();
+            const hour = new Date(access.access_time).getHours();
             accessHours[hour] = (accessHours[hour] || 0) + 1;
         });
-    
         let peakHour = 'N/A';  
         if (Object.keys(accessHours).length > 0) {
-            peakHour = Object.keys(accessHours).reduce((a, b) => accessHours[+a] > accessHours[+b] ? a : b);
+            const peakHourNum = Object.keys(accessHours).reduce((a, b) => accessHours[+a] > accessHours[+b] ? a : b);
+            peakHour = `${peakHourNum}:00-${+peakHourNum + 1}:00`;
         }
     
-        const report = Administration.create({
-            total_accesses: totalAccesses,
-            total_absences: totalAbsences,
-            frequent_users: frequentUsers,
-            infrequent_users: infrequentUsers,
+        const accessesByRoom = filteredAccesses.reduce((acc, access) => {
+            const roomName = access.room.room_name;
+            acc[roomName] = (acc[roomName] || 0) + 1;
+            return acc;
+        }, {} as {[key: string]: number});
+    
+        const report: DailyReportResponse = {
             report_date: date,
-        });
-    
-        await report.save();
-    
-        return {
-            report,
-            peakHour: peakHour !== 'N/A' ? `${peakHour}:00-${+peakHour + 1}:00` : 'N/A',
+            total_accesses: {
+                count: totalAccesses,
+                persons: filteredAccesses.map(access => ({
+                    user_id: access.person.person_id,
+                    first_name: access.person.first_name,
+                    last_name: access.person.last_name,
+                    startup: access.person.startup.name,
+                    last_access: access.access_time,
+                })),
+            },
+            total_absences: totalAbsences,
+            frequent_users: frequentUsers.length,
+            infrequent_users: infrequentUsers.length,
+            peak_hour: peakHour,
+            accesses_by_room: accessesByRoom,
         };
+    
+        return report;
     }
     
     public static async getReportsInRange(start_date: string, end_date: string): Promise<Administration[]> {
