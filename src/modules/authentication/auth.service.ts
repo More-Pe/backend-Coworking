@@ -22,7 +22,7 @@ export class AuthService {
         newUser .last_name = last_name;
         newUser .email = email;
         newUser .password = hashedPassword;
-        newUser .startup = startup; // Ensure 'startup' is a Startup object
+        newUser .startup = startup;
         
         await newUser.save();
         
@@ -49,7 +49,7 @@ export class AuthService {
                 email: user.email,
             },
             process.env.JWT_SECRET as string,
-            { expiresIn: '2h' }
+            { expiresIn: '8h' }
         );
 
         return { user, token };

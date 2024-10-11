@@ -8,59 +8,62 @@ export class AccessService {
 	public static async registerEntry(
 		person_id: number,
 		room_id: number,
-	): Promise<Access> {
+	  ): Promise<Access> {
 		const room = await Room.findOne({ where: { room_id } });
 		if (!room) {
-			throw new Error('Room not found');
+		  throw new Error('Room not found');
 		}
-
+	  
 		const person = await Person.findOne({ where: { person_id } });
 		if (!person) {
-			throw new Error('Person not found');
+		  throw new Error('Person not found');
 		}
-
+	  
+		if (person.role !== 'user' && person.role !== 'admin') {
+		  throw new Error('Only users and admins can register an entry');
+		}
+	  
 		const existingActiveAccess = await Access.findOne({
-			where: {
-				person_id: person_id,
-				status: Status.Entry,
-				exit_time: IsNull(),
-			},
+		  where: {
+			person_id: person_id,
+			status: Status.Entry,
+			exit_time: IsNull(),
+		  },
 		});
-
+	  
 		if (existingActiveAccess) {
-			if (existingActiveAccess.room_id === room_id) {
-				throw new Error(
-					'You have already entered this room and haven’t registered an exit.',
-				);
-			} else {
-				throw new Error('You already have an active entry in another room.');
-			}
+		  if (existingActiveAccess.room_id === room_id) {
+			throw new Error(
+			  "You have already entered this room and haven't registered an exit",
+			);
+		  } else {
+			throw new Error('You already have an active entry in another room.');
+		  }
 		}
-
+	  
 		const currentPeople = await AccessService.getCurrentPeopleInRoom(room_id);
 		if (currentPeople.people.length >= room.capacity) {
-			throw new Error('The room has reached its maximum capacity');
+		  throw new Error('The room has reached its maximum capacity');
 		}
-
+	  
 		const access = Access.create({
-			person_id: person.person_id,
-			room_id: room.room_id,
-			entry_time: new Date(),
-			status: Status.Entry,
+		  person_id: person.person_id,
+		  room_id: room.room_id,
+		  entry_time: new Date(),
+		  status: Status.Entry,
 		});
-
+	  
 		const savedAccess = await access.save();
-
+	  
 		await AccessHistory.create({
-			person_id: person.person_id,
-			room_id: room.room_id,
-			access_time: savedAccess.entry_time,
-			action: 'entry',
+		  person_id: person.person_id,
+		  room_id: room.room_id,
+		  access_time: savedAccess.entry_time,
+		  action: 'entry',
 		}).save();
-
+	  
 		return savedAccess;
-	}
-
+	  }
 	public static async registerExit(
 		person_id: number,
 		room_id: number,

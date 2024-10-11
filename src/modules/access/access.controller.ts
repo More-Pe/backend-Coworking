@@ -3,46 +3,52 @@ import { AccessService } from './access.service';
 
 export const registerEntry = async (req: Request, res: Response) => {
     try {
-        const { room_id } = req.body;
-        const person_id = req.tokenData?.person_id;
-
-        if (!person_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'Person ID is missing from the token',
-            });
-        }
-
-        if (!room_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'Room ID is required',
-            });
-        }
-
-        const roomIdNumber = parseInt(room_id, 10);
-        if (isNaN(roomIdNumber)) {
-            return res.status(400).json({
-                success: false,
-                message: 'The room ID has to be a valid number',
-            });
-        }
-
-        // Intentamos registrar la entrada
-        const access = await AccessService.registerEntry(person_id, roomIdNumber);
-
-        return res.status(201).json({
-            success: true,
-            message: 'Entry registered successfully',
-            data: access,
+      const { room_id } = req.body;
+      const person_id = req.tokenData?.person_id;
+  
+      if (!person_id) {
+        return res.status(401).json({
+          success: false,
+          message: 'Unauthorized: Person ID is missing from the token',
         });
-    } catch (error: any) {
+      }
+  
+      if (!room_id) {
         return res.status(400).json({
-            success: false,
-            message: error.message || 'Error registering entry',
+          success: false,
+          message: 'Room ID is required',
         });
+      }
+  
+      const roomIdNumber = parseInt(room_id, 10);
+      if (isNaN(roomIdNumber)) {
+        return res.status(400).json({
+          success: false,
+          message: 'The room ID has to be a valid number',
+        });
+      }
+  
+      if (roomIdNumber <= 0 || person_id <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Room ID and person ID must be positive numbers',
+        });
+      }
+  
+      const access = await AccessService.registerEntry(person_id, roomIdNumber);
+  
+      return res.status(201).json({
+        success: true,
+        message: 'Entry registered successfully',
+        data: access,
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        success: false,
+        message: error.message || 'Error registering entry',
+      });
     }
-};
+  };
 
 export const registerExit = async (req: Request, res: Response) => {
     try {
