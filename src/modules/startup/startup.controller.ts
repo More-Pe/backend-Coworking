@@ -18,6 +18,22 @@ export const getAllStartups = async (req: Request, res: Response) => {
   }
 };
 
+export const getPrograms = async (req: Request, res: Response) => {
+  try {
+    const programs = await StartupService.getPrograms();
+    return res.status(200).json({
+      success: true,
+      data: programs,
+    });
+  } catch (error: any) {
+    console.error('Error retrieving programs:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Error retrieving programs',
+    });
+  }
+};
+
 export const getStartupById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

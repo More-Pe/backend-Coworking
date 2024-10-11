@@ -61,4 +61,12 @@ export class StartupService {
     }
     return startup.persons;
   }
+
+  public static async getPrograms(): Promise<Program[]> {
+    const programs = Object.values(Program);
+    if (!programs || programs.length === 0) {
+      throw new Error(`Programs not found`);
+    }
+    return programs;
+  }
 }

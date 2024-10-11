@@ -19,7 +19,7 @@ Whether you are a startup, freelancer, or a team looking for a collaborative env
 - **🔐 Access Control**: The application provides mechanisms for checking in and checking out of rooms, ensuring accurate tracking of room usage and reservations.
 
 
-## Deploy 🚀
+## 🚀 Deploy
 
 **In progress...**
 <div align="center">
