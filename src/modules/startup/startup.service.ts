@@ -11,14 +11,14 @@ export class StartupService {
       where: { startup_id }
     });
     if (!startup) {
-      throw new Error(`Startup no encontrado con id ${startup_id}`);
+      throw new Error(`Startup not found with id ${startup_id}`);
     }
     return startup;
   }
 
   public static async createStartup(data: Partial<Startup>): Promise<Startup> {
     if (!data.program || !Object.values(Program).includes(data.program as Program)) {
-      throw new Error('Invalid program. Should be one of this: ' + Object.values(Program).join(', '));
+      throw new Error('Invalid program. Should be one of these: ' + Object.values(Program).join(', '));
     }
 
     const startup = Startup.create({
@@ -36,7 +36,7 @@ export class StartupService {
     }
 
     if (data.program && !Object.values(Program).includes(data.program as Program)) {
-      throw new Error('Invalid program. Should be one of this: ' + Object.values(Program).join(', '));
+      throw new Error('Invalid program. Should be one of these: ' + Object.values(Program).join(', '));
     }
 
     Object.assign(startup, data);

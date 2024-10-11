@@ -6,12 +6,12 @@ import { getAllStartups, getStartupById, createStartup, updateStartup, deleteSta
 const router = Router();
 
 router.get('/programs', getPrograms);
-router.get('/', getAllStartups); //OK
+router.get('/', getAllStartups); // OK
 
-router.get('/:id', auth, isAdmin, getStartupById); //OK
+router.get('/:id', auth, isAdmin, getStartupById); // OK
 
-router.post('/', auth, isAdmin, createStartup); //OK
-router.put('/:id', auth, isAdmin, updateStartup); //OK
-router.delete('/:id', auth, isAdmin, deleteStartup); //OK
+router.post('/', auth, isAdmin, createStartup); // OK
+router.put('/:id', auth, isAdmin, updateStartup); // OK
+router.delete('/:id', auth, isAdmin, deleteStartup); // OK
 
 export default router;
