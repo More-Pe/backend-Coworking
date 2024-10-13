@@ -54,13 +54,6 @@ export class PersonService {
             throw new Error(`User not found with id ${personId}`);
         }
     
-        const allowedFields: Array<keyof Person> = ['first_name', 'last_name', 'startup', 'email', 'password', 'phone', 'dni'];
-    
-        const invalidFields = Object.keys(updateData).filter((key) => !allowedFields.includes(key as keyof Person));
-        if (invalidFields.length > 0) {
-            throw new Error(`Invalid fields: ${invalidFields.join(', ')}`);
-        }
-    
         Object.assign(person, updateData);
         return await person.save();
     }

@@ -16,7 +16,7 @@ import {
 const router = Router();
 
 router.get('/profile', auth, getOwnProfile);
-router.put('/profile', auth, updateOwnProfile);
+router.patch('/profile', auth, updateOwnProfile);
 
 router.get('/', auth, isAdmin, getPersons);
 router.post('/create', auth, isAdmin, createUserByAdmin);
