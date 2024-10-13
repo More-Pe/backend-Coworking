@@ -16,6 +16,9 @@ export class PersonService {
     static async getPersonById(personId: number): Promise<Person | null> {
         return Person.findOne({ where: { person_id: personId } });
     }
+    static async getProfile(personId: number): Promise<Person | null> {
+        return Person.findOne({ where: { person_id: personId }, relations: ['startup'] });
+    }
 
     public static async createUserByAdmin(
         first_name: string,

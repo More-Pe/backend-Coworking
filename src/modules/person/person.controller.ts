@@ -62,7 +62,7 @@ export const getPersonById = async (req: Request, res: Response) => {
 export const getOwnProfile = async (req: Request, res: Response) => {
     try {
         const personId = req.tokenData.person_id;
-        const person = await PersonService.getPersonById(personId);
+        const person = await PersonService.getProfile(personId);
 
         if (!person) {
             return res.status(404).json({
@@ -78,13 +78,13 @@ export const getOwnProfile = async (req: Request, res: Response) => {
                 person_id: person.person_id,
                 first_name: person.first_name,
                 last_name: person.last_name,
-                startup: person.startup,
                 email: person.email,
                 password: person.password,
                 phone: person.phone,
                 role: person.role,
                 frequency_status: person.frequency_status,
                 dni: person.dni,
+                startup: person.startup.name,
             },
         });
     } catch (error: any) {
