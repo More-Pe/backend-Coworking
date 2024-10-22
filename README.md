@@ -16,7 +16,7 @@ Whether you are a startup, freelancer, or a team looking for a collaborative env
 - **📊 Reporting**: The system generates detailed reports based on access history, offering insights into usage patterns and security, and allowing for data export for further analysis.
 - **🚀 Startup Management**: The application includes functionalities for managing startup information, allowing for the creation, updating, and deletion of startup records, as well as retrieving associated personnel.
 - **🏢 Room Management**: Users can create, update, and delete room records, as well as view the current state of rooms, including occupancy and capacity details.
-- **🔐 Access Control**: The application provides mechanisms for checking in and checking out of rooms, ensuring accurate tracking of room usage and reservations.
+- **🔐 Access Control**: The application provides mechanisms for checking in and checking out of rooms, ensuring accurate tracking of room usage and reservations. Additionally, a cron job has been implemented to automatically check out all users at the end of each day when the coworking space closes, in case they forget to do so manually.
 
 
 ## 🚀 Deploy

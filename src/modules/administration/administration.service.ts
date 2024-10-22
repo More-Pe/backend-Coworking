@@ -1,8 +1,6 @@
 import { Between, MoreThan, LessThan } from 'typeorm';
 import { Person } from '../person/person.entity';
-import { Administration } from './administration.entity';
 import { AccessHistory } from '../access_history/access_history.entity';
-import { Access, Status } from '../access/access.entity';
 import { Room } from '../room/room.entity';
 import { DailyReportResponse } from '../../types';
 
